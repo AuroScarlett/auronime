@@ -21,8 +21,6 @@ const Navbar = () => {
             </span>
           </span>
         </Link>
-
-        <InputSearch />
       </div>
     </header>
   );
