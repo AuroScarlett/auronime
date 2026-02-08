@@ -1,65 +1,58 @@
-import Image from "next/image";
+import AnimeList from "@/components/AnimeList";
+import InputSearch from "@/components/InputSearch";
+import { getAnimeResponse } from "@/libs/api-libs";
+import Image from "next/image"; // Pastikan import Image ada
 
-export default function Home() {
+export default async function Page() {
+  const topAnime = await getAnimeResponse("home", "");
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.js file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <>
+      <section className="py-12 px-4 flex flex-col items-center justify-center text-center space-y-6">
+        {/* --- BAGIAN JUDUL BARU --- */}
+        {/* Flex container untuk mensejajarkan Teks - Gambar - Teks */}
+        <h1 className="flex flex-col md:flex-row items-center justify-center gap-3 md:gap-4 text-4xl md:text-6xl font-extrabold text-white">
+          {/* Bagian 1: Teks Kiri */}
+          <span>Nonton di</span>
+
+          {/* Bagian 2: Gambar Tengah */}
+          <Image
+            src="/icon.png"
+            width={65}
+            height={65}
+            alt="AuroNime Logo"
+            className="drop-shadow-lg object-contain animate-pulse" // Bonus: animate-bounce biar logonya loncat-loncat lucu
+          />
+
+          {/* Bagian 3: Teks Kanan */}
+          <span className="text-yellow-400">AuroNime</span>
+        </h1>
+        {/* ------------------------- */}
+
+        <div className="w-full max-w-lg">
+          <InputSearch />
+        </div>
+      </section>
+
+      <section className="py-8">
+        <div className="flex justify-between items-center px-4 mb-4">
+          <h2 className="text-2xl font-bold text-yellow-400 border-l-4 border-yellow-400 pl-3">
+            Sedang Tayang (Ongoing)
+          </h2>
+        </div>
+
+        {/* Render List Anime */}
+        <AnimeList api={topAnime} />
+
+        {/* Pesan Kaki (Footer kecil sebagai ganti Pagination) */}
+        <div className="text-center text-gray-500 mt-10 mb-6 px-4">
+          <p>Ingin cari anime lain?</p>
+          <p className="text-sm">
+            Gunakan fitur <strong>Pencarian</strong> di atas untuk menemukan
+            anime favoritmu.
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+      </section>
+    </>
   );
 }
