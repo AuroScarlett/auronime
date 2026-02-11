@@ -60,8 +60,15 @@ export default async function Page({ params }) {
 
               {anime.genres &&
                 anime.genres.map((genre, index) => {
-                  const genreName = genre.name || genre;
-                  const genreSlug = genre.slug || genre.toLowerCase();
+                  const genreSlug =
+                    genre.slug ||
+                    (typeof genre === "string" ? genre.toLowerCase() : "");
+
+                  let genreName = genre.name;
+                  if (!genreName && genreSlug) {
+                    genreName =
+                      genreSlug.charAt(0).toUpperCase() + genreSlug.slice(1);
+                  }
 
                   return (
                     <Link
