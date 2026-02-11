@@ -27,7 +27,7 @@ export default async function Page({ params }) {
     );
   }
 
-  // Logic Episode List (sesuai perbaikan sebelumnya)
+  // Logic Episode List
   const episodes = anime.episode_lists || anime.episode_list || [];
 
   return (
@@ -36,6 +36,7 @@ export default async function Page({ params }) {
         <div className="absolute inset-0 bg-gray-900 opacity-80"></div>
 
         <div className="container mx-auto px-4 py-8 relative z-10 flex flex-col md:flex-row gap-8">
+          {/* BAGIAN POSTER */}
           <div className="w-full md:w-1/3 lg:w-1/4 flex justify-center">
             <img
               src={anime.poster || anime.thumb}
@@ -44,13 +45,14 @@ export default async function Page({ params }) {
             />
           </div>
 
+          {/* BAGIAN INFO UTAMA */}
           <div className="w-full md:w-2/3">
             <h1 className="text-3xl md:text-5xl font-bold text-yellow-400 mb-2">
               {anime.title}
             </h1>
             <p className="text-gray-400 text-sm mb-4">{anime.japanese_title}</p>
 
-            <div className="flex flex-wrap gap-4 text-sm text-gray-300 mb-6">
+            <div className="flex flex-wrap gap-2 text-sm text-gray-300 mb-6 items-center">
               <span className="bg-gray-800 px-3 py-1 rounded border border-gray-600">
                 ⭐ {anime.rating || anime.score || "-"}
               </span>
@@ -60,6 +62,24 @@ export default async function Page({ params }) {
               <span className="bg-gray-800 px-3 py-1 rounded border border-gray-600">
                 {anime.produser || anime.studio || "-"}
               </span>
+
+              {/* --- [BARU] BAGIAN TOMBOL GENRE DISINI --- */}
+              {anime.genres &&
+                anime.genres.map((genre, index) => {
+                  const genreName = genre.name || genre;
+                  const genreSlug = genre.slug || genre.toLowerCase();
+
+                  return (
+                    <Link
+                      key={index}
+                      href={`/genre/${genreSlug}`}
+                      className="bg-yellow-500 text-black font-bold px-3 py-1 rounded hover:bg-yellow-400 transition"
+                    >
+                      {genreName}
+                    </Link>
+                  );
+                })}
+              {/* ----------------------------------------- */}
             </div>
 
             <h3 className="text-xl font-bold mb-2 border-b border-gray-700 inline-block pb-1">
