@@ -1,8 +1,5 @@
 # 🦊 AuroNime - Platform Streaming Anime Sub Indo
 
-![AuroNime Banner](https://via.placeholder.com/1200x400/111827/FACC15?text=AuroNime+Streaming+Platform)
-*(Ganti link di atas dengan screenshot website aslimu nanti)*
-
 **AuroNime** adalah aplikasi web modern untuk menonton anime dengan subtitle Indonesia secara gratis tanpa iklan yang mengganggu. Dibangun menggunakan teknologi web terbaru untuk performa maksimal dan pengalaman pengguna yang mulus.
 
 Project ini dibuat sebagai portofolio pembelajaran **Next.js** dan konsumsi **REST API**.
