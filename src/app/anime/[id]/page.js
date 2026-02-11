@@ -65,7 +65,13 @@ export default async function Page({ params }) {
                     (typeof genre === "string" ? genre.toLowerCase() : "");
 
                   let genreName = genre.name;
-                  if (!genreName && genreSlug) {
+
+                  if (
+                    !genreName ||
+                    (typeof genreName === "string" &&
+                      genreName.trim() === "" &&
+                      genreSlug)
+                  ) {
                     genreName =
                       genreSlug.charAt(0).toUpperCase() + genreSlug.slice(1);
                   }
