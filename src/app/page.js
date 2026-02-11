@@ -34,15 +34,23 @@ export default async function Page() {
           <InputSearch />
         </div>
 
-        <div className="pt-2">
+        <div className="pt-4 flex flex-wrap justify-center gap-4">
+          {/* Tombol Genre */}
           <Link
-            href="/genres" // Link ke file src/app/genres/page.js yang baru kita buat
+            href="/genres"
             className="bg-gray-800 border border-gray-600 hover:bg-yellow-500 hover:text-black hover:border-yellow-500 text-white font-bold py-2 px-6 rounded-full transition-all flex items-center gap-2 shadow-lg"
           >
             📂 Lihat Semua Genre
           </Link>
+
+          {/* Tombol Jadwal (BARU) */}
+          <Link
+            href="/schedule"
+            className="bg-gray-800 border border-gray-600 hover:bg-yellow-500 hover:text-black hover:border-yellow-500 text-white font-bold py-2 px-6 rounded-full transition-all flex items-center gap-2 shadow-lg"
+          >
+            📅 Jadwal Tayang
+          </Link>
         </div>
-        {/* ------------------------------------ */}
       </section>
 
       <section className="py-8">
