@@ -66,6 +66,7 @@ src/
 │   └── page.js          # Halaman Utama (Home)
 ├── components/          # Komponen UI (Navbar, Card, List, dll)
 └── libs/                # Konfigurasi API Call
+```
 
 ⚠️ Disclaimer
 Project ini dibuat semata-mata untuk tujuan edukasi (belajar Next.js & API Handling).
