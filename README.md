@@ -68,7 +68,7 @@ src/
 └── libs/                # Konfigurasi API Call
 ```
 
-⚠️ Disclaimer
+## ⚠️ Disclaimer
 Project ini dibuat semata-mata untuk tujuan edukasi (belajar Next.js & API Handling).
 
 Seluruh konten (video, gambar, sinopsis) diambil dari pihak ketiga (Unofficial API).
@@ -77,7 +77,7 @@ Pembuat project tidak menyimpan file video apapun di server sendiri.
 
 Jika Anda pemilik hak cipta dan keberatan, silakan hubungi penyedia sumber data asli.
 
-🤝 Kontribusi
+## 🤝 Kontribusi
 Ingin menambahkan fitur baru? Silakan Fork repository ini dan buat Pull Request. Ide fitur yang bisa dikembangkan:
 
 [ ] Fitur History Nonton (LocalStorage)
