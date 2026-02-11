@@ -2,10 +2,8 @@ import { getAnimeResponse } from "@/libs/api-libs";
 import Link from "next/link";
 
 export default async function Page() {
-  // 1. Fetch data Genre langsung dari API
   const response = await getAnimeResponse("genre", "");
 
-  // API mengembalikan array object { name: "Action", slug: "action", ... }
   const genres = response || [];
 
   return (
@@ -28,7 +26,6 @@ export default async function Page() {
             return (
               <Link
                 key={index}
-                // Gunakan slug dari API agar linknya pasti benar
                 href={`/genre/${genre.slug}`}
                 className="bg-gray-800 text-gray-200 hover:bg-yellow-400 hover:text-black transition-all p-4 rounded-lg text-center font-bold border border-gray-700 shadow-md group h-full flex items-center justify-center"
               >

@@ -3,15 +3,10 @@ import AnimeList from "@/components/AnimeList";
 import Link from "next/link";
 
 export default async function Page({ params }) {
-  // 1. Tangkap keyword dari URL
   const { keyword } = await params;
 
-  // 2. Rapikan keyword untuk tampilan (misal "One%20Piece" jadi "One Piece")
   const decodedKeyword = decodeURI(keyword);
 
-  // 3. Fetch API
-  // Karena format API-nya: /api/search/{keyword}
-  // Kita masukkan keyword langsung ke parameter resource
   const searchAnime = await getAnimeResponse(`search/${keyword}`, "");
 
   return (
@@ -30,7 +25,6 @@ export default async function Page({ params }) {
           </h1>
         </div>
 
-        {/* Render Hasil Pencarian */}
         <AnimeList api={searchAnime} />
       </section>
     </>

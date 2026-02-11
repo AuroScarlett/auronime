@@ -1,17 +1,14 @@
 import Link from "next/link";
 
 const AnimeList = ({ api }) => {
-  // 1. Guard Clause
   if (!api)
     return (
       <div className="text-center text-red-500 p-8">⚠️ Koneksi API Gagal</div>
     );
 
-  // 2. DETEKSI FORMAT DATA
   const dataAnime =
     api.ongoing_anime || api.data?.ongoing_anime || api.data || api;
 
-  // 3. Validasi Array
   if (!Array.isArray(dataAnime) || dataAnime.length === 0) {
     return (
       <div className="text-center text-yellow-500 p-8">
@@ -23,15 +20,11 @@ const AnimeList = ({ api }) => {
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 px-4">
       {dataAnime.map((anime, index) => {
-        // LOGIC ID:
         let id = anime.slug || anime.endpoint || anime.id;
         if (id && id.includes("/anime/")) id = id.split("/anime/")[1];
 
-        // LOGIC GAMBAR:
         const image = anime.poster || anime.thumb || anime.image;
 
-        // LOGIC LABEL (PERBAIKAN DISINI):
-        // Prioritas: Episode -> Status -> Rating -> Tipe -> Tanda Tanya
         const info =
           anime.current_episode ||
           anime.episode ||

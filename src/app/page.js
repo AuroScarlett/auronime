@@ -1,7 +1,7 @@
 import AnimeList from "@/components/AnimeList";
 import InputSearch from "@/components/InputSearch";
 import { getAnimeResponse } from "@/libs/api-libs";
-import Image from "next/image"; // Pastikan import Image ada
+import Image from "next/image";
 import Link from "next/link";
 
 export default async function Page() {
@@ -10,32 +10,25 @@ export default async function Page() {
   return (
     <>
       <section className="py-12 px-4 flex flex-col items-center justify-center text-center space-y-6">
-        {/* --- BAGIAN JUDUL BARU --- */}
-        {/* Flex container untuk mensejajarkan Teks - Gambar - Teks */}
         <h1 className="flex flex-col md:flex-row items-center justify-center gap-3 md:gap-4 text-4xl md:text-6xl font-extrabold text-white">
-          {/* Bagian 1: Teks Kiri */}
           <span>Nonton di</span>
 
-          {/* Bagian 2: Gambar Tengah */}
           <Image
             src="/icon.png"
             width={65}
             height={65}
             alt="AuroNime Logo"
-            className="drop-shadow-lg object-contain animate-pulse" // Bonus: animate-bounce biar logonya loncat-loncat lucu
+            className="drop-shadow-lg object-contain animate-pulse"
           />
 
-          {/* Bagian 3: Teks Kanan */}
           <span className="text-yellow-400">AuroNime</span>
         </h1>
-        {/* ------------------------- */}
 
         <div className="w-full max-w-lg">
           <InputSearch />
         </div>
 
         <div className="pt-4 flex flex-wrap justify-center gap-4">
-          {/* Tombol Genre */}
           <Link
             href="/genres"
             className="bg-gray-800 border border-gray-600 hover:bg-yellow-500 hover:text-black hover:border-yellow-500 text-white font-bold py-2 px-6 rounded-full transition-all flex items-center gap-2 shadow-lg"
@@ -43,7 +36,6 @@ export default async function Page() {
             📂 Lihat Semua Genre
           </Link>
 
-          {/* Tombol Jadwal (BARU) */}
           <Link
             href="/schedule"
             className="bg-gray-800 border border-gray-600 hover:bg-yellow-500 hover:text-black hover:border-yellow-500 text-white font-bold py-2 px-6 rounded-full transition-all flex items-center gap-2 shadow-lg"
@@ -60,10 +52,8 @@ export default async function Page() {
           </h2>
         </div>
 
-        {/* Render List Anime */}
         <AnimeList api={topAnime} />
 
-        {/* Pesan Kaki (Footer kecil sebagai ganti Pagination) */}
         <div className="text-center text-gray-500 mt-10 mb-6 px-4">
           <p>Ingin cari anime lain?</p>
           <p className="text-sm">

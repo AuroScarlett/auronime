@@ -1,7 +1,6 @@
 import { getAnimeResponse } from "@/libs/api-libs";
 import Link from "next/link";
 
-// --- 1. FUNGSI UNTUK MENGUBAH JUDUL TAB BROWSER ---
 export async function generateMetadata({ params }) {
   const { id } = await params;
   const anime = await getAnimeResponse(`anime/${id}`, "");
@@ -16,7 +15,6 @@ export async function generateMetadata({ params }) {
   };
 }
 
-// --- 2. KOMPONEN HALAMAN UTAMA ---
 export default async function Page({ params }) {
   const { id } = await params;
   const anime = await getAnimeResponse(`anime/${id}`, "");
@@ -27,7 +25,6 @@ export default async function Page({ params }) {
     );
   }
 
-  // Logic Episode List
   const episodes = anime.episode_lists || anime.episode_list || [];
 
   return (
@@ -36,7 +33,6 @@ export default async function Page({ params }) {
         <div className="absolute inset-0 bg-gray-900 opacity-80"></div>
 
         <div className="container mx-auto px-4 py-8 relative z-10 flex flex-col md:flex-row gap-8">
-          {/* BAGIAN POSTER */}
           <div className="w-full md:w-1/3 lg:w-1/4 flex justify-center">
             <img
               src={anime.poster || anime.thumb}
@@ -45,7 +41,6 @@ export default async function Page({ params }) {
             />
           </div>
 
-          {/* BAGIAN INFO UTAMA */}
           <div className="w-full md:w-2/3">
             <h1 className="text-3xl md:text-5xl font-bold text-yellow-400 mb-2">
               {anime.title}
@@ -63,7 +58,6 @@ export default async function Page({ params }) {
                 {anime.produser || anime.studio || "-"}
               </span>
 
-              {/* --- [BARU] BAGIAN TOMBOL GENRE DISINI --- */}
               {anime.genres &&
                 anime.genres.map((genre, index) => {
                   const genreName = genre.name || genre;
@@ -79,7 +73,6 @@ export default async function Page({ params }) {
                     </Link>
                   );
                 })}
-              {/* ----------------------------------------- */}
             </div>
 
             <h3 className="text-xl font-bold mb-2 border-b border-gray-700 inline-block pb-1">

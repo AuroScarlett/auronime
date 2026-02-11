@@ -2,12 +2,9 @@ import { getAnimeResponse } from "@/libs/api-libs";
 import Link from "next/link";
 
 export default async function Page() {
-  // 1. Ambil data dari Home (karena info jadwal ada disitu)
   const data = await getAnimeResponse("home", "");
   const ongoingAnime = data.ongoing_anime || [];
 
-  // 2. Siapkan wadah untuk hari-hari
-  // Kita urutkan dari Senin sampai Minggu (plus Random)
   const daysOrder = [
     "Senin",
     "Selasa",
@@ -19,18 +16,14 @@ export default async function Page() {
     "Random",
   ];
 
-  // 3. Logic Pengelompokan (Grouping)
   const schedule = {};
 
-  // Inisialisasi array kosong untuk setiap hari
   daysOrder.forEach((day) => (schedule[day] = []));
 
-  // Masukkan anime ke kotak harinya masing-masing
   ongoingAnime.forEach((anime) => {
     if (anime.release_day && schedule[anime.release_day]) {
       schedule[anime.release_day].push(anime);
     } else {
-      // Jika ada hari aneh/typo dari API, masukkan ke Random
       schedule["Random"].push(anime);
     }
   });
@@ -50,12 +43,10 @@ export default async function Page() {
           </h1>
         </div>
 
-        {/* Render Setiap Hari */}
         <div className="space-y-12">
           {daysOrder.map((day) => {
             const animeList = schedule[day];
 
-            // Jangan tampilkan hari yang kosong (kecuali mau ditampilkan tulis "Libur")
             if (animeList.length === 0) return null;
 
             return (

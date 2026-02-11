@@ -1,23 +1,20 @@
 "use client";
 
 import { useRef } from "react";
-import { useRouter } from "next/navigation"; // Gunakan next/navigation untuk App Router
+import { useRouter } from "next/navigation";
 
 const InputSearch = () => {
   const searchRef = useRef();
   const router = useRouter();
 
   const handleSearch = (event) => {
-    // Mencegah refresh halaman jika tekan enter
     if (event.key === "Enter" || event.type === "click") {
       event.preventDefault();
 
       const keyword = searchRef.current.value;
 
-      // Validasi: Jangan search kalau kosong
       if (!keyword || keyword.trim() == "") return;
 
-      // Arahkan ke halaman search (nanti kita buat halamannya)
       router.push(`/search/${keyword}`);
     }
   };
