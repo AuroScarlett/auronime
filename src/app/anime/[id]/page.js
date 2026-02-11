@@ -58,28 +58,24 @@ export default async function Page({ params }) {
                 {anime.produser || anime.studio || "-"}
               </span>
 
-              {anime.genres &&
-                anime.genres.map((genre, index) => {
-                  const genreSlug =
-                    genre.slug ||
-                    (typeof genre === "string" ? genre.toLowerCase() : "");
-
+              {anime.genres && anime.genres.map((genre, index) => {
+                  const genreSlug = genre.slug || (typeof genre === 'string' ? genre.toLowerCase() : "");
+                  
                   let genreName = genre.name;
                   if (!genreName && genreSlug) {
-                    genreName =
-                      genreSlug.charAt(0).toUpperCase() + genreSlug.slice(1);
+                      genreName = genreSlug.charAt(0).toUpperCase() + genreSlug.slice(1);
                   }
 
                   return (
-                    <Link
-                      key={index}
-                      href={`/genre/${genreSlug}`}
-                      className="bg-yellow-500 text-black font-bold px-3 py-1 rounded hover:bg-yellow-400 transition"
-                    >
-                      {genreName}
-                    </Link>
-                  );
-                })}
+                      <Link 
+                          key={index} 
+                          href={`/genre/${genreSlug}`}
+                          className="bg-yellow-500 text-black font-bold px-3 py-1 rounded hover:bg-yellow-400 transition"
+                      >
+                          {genreName}
+                      </Link>
+                  )
+              })}
             </div>
 
             <h3 className="text-xl font-bold mb-2 border-b border-gray-700 inline-block pb-1">
