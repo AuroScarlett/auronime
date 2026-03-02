@@ -11,6 +11,7 @@ export const metadata = {
   template: "%s | AuroNime",
   description:
     "Platform streaming anime terbaik, tercepat, dan gratis dengan subtitle Indonesia.",
+  manifest: "/manifest.json",
 };
 
 export default function RootLayout({ children }) {
