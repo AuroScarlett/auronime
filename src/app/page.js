@@ -9,6 +9,7 @@ export default async function Page() {
 
   return (
     <>
+      {/* --- BAGIAN ATAS (HERO & SEARCH) TETAP TAMPIL WALAUPUN API ERROR --- */}
       <section className="py-12 px-4 flex flex-col items-center justify-center text-center space-y-6">
         <h1 className="flex flex-col md:flex-row items-center justify-center gap-3 md:gap-4 text-4xl md:text-6xl font-extrabold text-white">
           <span>Nonton di</span>
@@ -52,7 +53,19 @@ export default async function Page() {
           </h2>
         </div>
 
-        <AnimeList api={topAnime} />
+        {!topAnime || !topAnime.ongoing_anime ? (
+          <div className="text-center py-10 px-4 bg-gray-800/50 mx-4 rounded-lg border border-gray-700">
+            <h3 className="text-xl font-bold text-white mb-2">
+              Waduh! Server API sedang sibuk.
+            </h3>
+            <p className="text-gray-400 text-sm">
+              Gagal memuat daftar anime. Silakan coba refresh beberapa saat
+              lagi.
+            </p>
+          </div>
+        ) : (
+          <AnimeList api={topAnime} />
+        )}
 
         <div className="text-center text-gray-500 mt-10 mb-6 px-4">
           <p>Ingin cari anime lain?</p>

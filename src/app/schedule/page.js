@@ -3,6 +3,26 @@ import Link from "next/link";
 
 export default async function Page() {
   const data = await getAnimeResponse("home", "");
+
+  if (!data || !data.ongoing_anime) {
+    return (
+      <section className="py-12 px-4 min-h-screen flex flex-col items-center justify-center">
+        <h2 className="text-2xl font-bold text-white mb-4">
+          Waduh! Server API sedang sibuk.
+        </h2>
+        <p className="text-gray-400">
+          Gagal memuat jadwal tayang. Silakan coba refresh beberapa saat lagi.
+        </p>
+        <Link
+          href="/"
+          className="mt-6 bg-yellow-500 text-black px-6 py-2 rounded-full font-bold hover:bg-yellow-400 transition"
+        >
+          Kembali ke Beranda
+        </Link>
+      </section>
+    );
+  }
+
   const ongoingAnime = data.ongoing_anime || [];
 
   const daysOrder = [
