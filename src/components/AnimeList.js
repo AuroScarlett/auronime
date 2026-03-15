@@ -6,10 +6,18 @@ const AnimeList = ({ api }) => {
       <div className="text-center text-red-500 p-8">⚠️ Koneksi API Gagal</div>
     );
 
-  const dataAnime =
-    api.ongoing_anime || api.data?.ongoing_anime || api.data || api;
+  let dataAnime = [];
+  if (Array.isArray(api)) {
+    dataAnime = api;
+  } else if (api.ongoing && Array.isArray(api.ongoing.data)) {
+    dataAnime = api.ongoing.data;
+  } else if (api.data && Array.isArray(api.data)) {
+    dataAnime = api.data;
+  } else if (api.ongoing_anime) {
+    dataAnime = api.ongoing_anime;
+  }
 
-  if (!Array.isArray(dataAnime) || dataAnime.length === 0) {
+  if (dataAnime.length === 0) {
     return (
       <div className="text-center text-yellow-500 p-8">
         Data tidak ditemukan.
@@ -23,9 +31,11 @@ const AnimeList = ({ api }) => {
         let id = anime.slug || anime.endpoint || anime.id;
         if (id && id.includes("/anime/")) id = id.split("/anime/")[1];
 
-        const image = anime.poster || anime.thumb || anime.image;
+        const image =
+          anime.thumbnail || anime.poster || anime.thumb || anime.image;
 
         const info =
+          anime.episodeInfo ||
           anime.current_episode ||
           anime.episode ||
           anime.status ||

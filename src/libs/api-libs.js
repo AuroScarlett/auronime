@@ -1,9 +1,13 @@
 export const getAnimeResponse = async (resource, query) => {
-  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+  const baseUrl = "https://otakudesuscrapperapi.my.id/api";
+
+  const route = resource === "home" ? "" : resource;
 
   const fullUrl = query
-    ? `${baseUrl}/${resource}?${query}`
-    : `${baseUrl}/${resource}`;
+    ? `${baseUrl}/${route}?${query}`
+    : route
+      ? `${baseUrl}/${route}`
+      : baseUrl;
 
   try {
     const response = await fetch(fullUrl);
@@ -18,7 +22,8 @@ export const getAnimeResponse = async (resource, query) => {
     try {
       const payload = JSON.parse(text);
 
-      return payload.data ? payload.data : payload;
+      // Kembalikan seluruh payload (jangan dipotong) agar AnimeList bisa membaca struktur barunya
+      return payload;
     } catch (jsonError) {
       console.error(
         "⚠️ API tidak mengirim JSON (Mungkin Maintenance):",

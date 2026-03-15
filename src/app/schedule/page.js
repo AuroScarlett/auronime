@@ -4,7 +4,7 @@ import Link from "next/link";
 export default async function Page() {
   const data = await getAnimeResponse("home", "");
 
-  if (!data || !data.ongoing_anime) {
+  if (!data || !data.ongoing || !data.ongoing.data) {
     return (
       <section className="py-12 px-4 min-h-screen flex flex-col items-center justify-center">
         <h2 className="text-2xl font-bold text-white mb-4">
@@ -23,7 +23,7 @@ export default async function Page() {
     );
   }
 
-  const ongoingAnime = data.ongoing_anime || [];
+  const ongoingAnime = data.ongoing.data || [];
 
   const daysOrder = [
     "Senin",
@@ -41,8 +41,8 @@ export default async function Page() {
   daysOrder.forEach((day) => (schedule[day] = []));
 
   ongoingAnime.forEach((anime) => {
-    if (anime.release_day && schedule[anime.release_day]) {
-      schedule[anime.release_day].push(anime);
+    if (anime.meta && schedule[anime.meta]) {
+      schedule[anime.meta].push(anime);
     } else {
       schedule["Random"].push(anime);
     }
@@ -84,7 +84,7 @@ export default async function Page() {
                     >
                       <div className="relative w-full h-64 md:h-80">
                         <img
-                          src={anime.poster}
+                          src={anime.thumbnail || anime.poster}
                           alt={anime.title}
                           className="w-full h-full object-cover transition-transform group-hover:scale-110"
                         />
@@ -93,7 +93,7 @@ export default async function Page() {
                             {anime.title}
                           </h3>
                           <p className="text-yellow-400 text-xs">
-                            {anime.current_episode}
+                            {anime.episodeInfo || anime.current_episode}
                           </p>
                         </div>
                       </div>
