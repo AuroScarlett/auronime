@@ -3,10 +3,11 @@ import Link from "next/link";
 
 export async function generateMetadata({ params }) {
   const { id } = await params;
-  const data = await getAnimeResponse(`episode/${id}`, "");
+  const response = await getAnimeResponse(`episode/${id}`, "");
 
-  if (data) {
-    const title = data.episode || data.title || "Nonton Anime";
+  if (response && response.data) {
+    const title =
+      response.data.title || response.data.episode || "Nonton Anime";
     return {
       title: `${title} - AuroNime`,
     };
@@ -19,27 +20,71 @@ export async function generateMetadata({ params }) {
 
 export default async function Page({ params }) {
   const { id } = await params;
-  const data = await getAnimeResponse(`episode/${id}`, "");
+  const response = await getAnimeResponse(`episode/${id}`, "");
 
-  if (!data) {
+  if (!response || !response.data) {
     return (
-      <div className="text-white text-center p-10">Video tidak ditemukan.</div>
+      <div className="flex flex-col items-center justify-center min-h-screen text-white text-center p-10">
+        <h2 className="text-2xl font-bold mb-4">Video tidak ditemukan.</h2>
+        <Link
+          href="/"
+          className="bg-yellow-500 text-black px-6 py-2 rounded-full font-bold hover:bg-yellow-400 transition"
+        >
+          Kembali ke Beranda
+        </Link>
+      </div>
     );
   }
 
-  const videoUrl = data.stream_url || data.url || data.iframe || "";
+  const data = response.data;
+
+  let videoUrl = data.stream_url || data.iframe || data.url || "";
+
+  if (
+    !videoUrl &&
+    data.stream &&
+    Array.isArray(data.stream) &&
+    data.stream.length > 0
+  ) {
+    videoUrl = data.stream[0].iframe || data.stream[0].link || "";
+  }
+
+  const getSlugFromLink = (linkUrl) => {
+    if (!linkUrl) return null;
+    const parts = linkUrl.split("/").filter(Boolean);
+    return parts[parts.length - 1];
+  };
+
+  const prevSlug = data.prev_episode_link
+    ? getSlugFromLink(data.prev_episode_link)
+    : null;
+  const nextSlug = data.next_episode_link
+    ? getSlugFromLink(data.next_episode_link)
+    : null;
 
   return (
     <div className="text-white min-h-screen pb-10">
       <div className="container mx-auto px-4 py-4">
-        <Link
-          href="/"
-          className="text-yellow-400 hover:underline flex items-center gap-2 mb-4"
-        >
-          &larr; Kembali ke Home
-        </Link>
-        <h1 className="text-xl md:text-2xl font-bold mb-4">
-          {data.episode || data.title}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+          <Link
+            href="/"
+            className="text-yellow-400 hover:text-yellow-200 font-bold transition flex items-center gap-2"
+          >
+            &larr; Beranda
+          </Link>
+
+          {data.anime_link && (
+            <Link
+              href={`/anime/${getSlugFromLink(data.anime_link)}`}
+              className="bg-gray-800 border border-gray-600 px-4 py-2 rounded hover:bg-gray-700 transition text-sm text-center"
+            >
+              Daftar Episode
+            </Link>
+          )}
+        </div>
+
+        <h1 className="text-xl md:text-2xl font-bold mb-6 text-yellow-400 border-b border-gray-800 pb-4">
+          {data.title || data.episode}
         </h1>
       </div>
 
@@ -55,35 +100,44 @@ export default async function Page({ params }) {
               referrerPolicy="origin"
             ></iframe>
           ) : (
-            <div className="flex items-center justify-center h-full text-red-500 flex-col gap-2">
-              <p>⚠️ Maaf, link stream belum tersedia.</p>
+            <div className="flex items-center justify-center h-full text-gray-400 flex-col gap-3 bg-gray-900">
+              <span className="text-4xl">⚠️</span>
+              <p>Maaf, link stream video belum tersedia dari server sumber.</p>
             </div>
           )}
         </div>
 
-        <div className="mt-6 p-4 bg-gray-800 rounded text-sm text-gray-300">
-          <p className="mb-4">
-            <strong>Status Server:</strong> Stream diambil dari{" "}
-            <em>DesuStream</em>.
-          </p>
+        <div className="mt-6 p-4 bg-gray-800/50 border border-gray-800 rounded-lg">
+          <div className="flex flex-wrap justify-between items-center gap-4">
+            <div className="flex-1">
+              {prevSlug ? (
+                <Link
+                  href={`/watch/${prevSlug}`}
+                  className="inline-block bg-gray-700 px-4 py-2 rounded font-bold hover:bg-yellow-500 hover:text-black transition"
+                >
+                  &laquo; Eps Sebelumnya
+                </Link>
+              ) : (
+                <span className="inline-block px-4 py-2 text-gray-600 text-sm italic">
+                  Tidak ada eps sebelumnya
+                </span>
+              )}
+            </div>
 
-          <div className="flex gap-4 flex-wrap">
-            {data.has_previous_episode && (
-              <Link
-                href={`/watch/${data.previous_episode?.slug}`}
-                className="bg-gray-700 px-4 py-2 rounded hover:bg-yellow-600 hover:text-black transition"
-              >
-                &laquo; Eps Sebelumnya
-              </Link>
-            )}
-            {data.has_next_episode && (
-              <Link
-                href={`/watch/${data.next_episode?.slug}`}
-                className="bg-gray-700 px-4 py-2 rounded hover:bg-yellow-600 hover:text-black transition"
-              >
-                Eps Selanjutnya &raquo;
-              </Link>
-            )}
+            <div className="flex-1 text-right">
+              {nextSlug ? (
+                <Link
+                  href={`/watch/${nextSlug}`}
+                  className="inline-block bg-gray-700 px-4 py-2 rounded font-bold hover:bg-yellow-500 hover:text-black transition"
+                >
+                  Eps Selanjutnya &raquo;
+                </Link>
+              ) : (
+                <span className="inline-block px-4 py-2 text-gray-600 text-sm italic">
+                  Belum ada eps selanjutnya
+                </span>
+              )}
+            </div>
           </div>
         </div>
       </div>

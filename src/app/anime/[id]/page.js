@@ -3,11 +3,11 @@ import Link from "next/link";
 
 export async function generateMetadata({ params }) {
   const { id } = await params;
-  const anime = await getAnimeResponse(`anime/${id}`, "");
+  const response = await getAnimeResponse(`anime/${id}`, "");
 
-  if (anime) {
+  if (response && response.data) {
     return {
-      title: `${anime.title} - AuroNime`,
+      title: `${response.data.title} - AuroNime`,
     };
   }
   return {
@@ -17,15 +17,19 @@ export async function generateMetadata({ params }) {
 
 export default async function Page({ params }) {
   const { id } = await params;
-  const anime = await getAnimeResponse(`anime/${id}`, "");
+  const response = await getAnimeResponse(`anime/${id}`, "");
 
-  if (!anime) {
+  if (!response || !response.data) {
     return (
-      <div className="text-white text-center p-10">Data tidak ditemukan.</div>
+      <div className="text-white text-center p-10">
+        Data anime tidak ditemukan.
+      </div>
     );
   }
 
-  const episodes = anime.episode_lists || anime.episode_list || [];
+  const anime = response.data;
+  const info = anime.info || {};
+  const episodes = anime.episodes || [];
 
   return (
     <div className="text-white min-h-screen pb-10">
@@ -35,7 +39,7 @@ export default async function Page({ params }) {
         <div className="container mx-auto px-4 py-8 relative z-10 flex flex-col md:flex-row gap-8">
           <div className="w-full md:w-1/3 lg:w-1/4 flex justify-center">
             <img
-              src={anime.poster || anime.thumb}
+              src={anime.thumbnail || anime.poster}
               alt={anime.title}
               className="w-64 md:w-full rounded-lg shadow-2xl border border-gray-700"
             />
@@ -45,54 +49,35 @@ export default async function Page({ params }) {
             <h1 className="text-3xl md:text-5xl font-bold text-yellow-400 mb-2">
               {anime.title}
             </h1>
-            <p className="text-gray-400 text-sm mb-4">{anime.japanese_title}</p>
+            <p className="text-gray-400 text-sm mb-4">{info.japanese || ""}</p>
 
             <div className="flex flex-wrap gap-2 text-sm text-gray-300 mb-6 items-center">
               <span className="bg-gray-800 px-3 py-1 rounded border border-gray-600">
-                ⭐ {anime.rating || anime.score || "-"}
+                ⭐ {info.skor || "-"}
               </span>
               <span className="bg-gray-800 px-3 py-1 rounded border border-gray-600">
-                {anime.status}
+                {info.status || "-"}
               </span>
               <span className="bg-gray-800 px-3 py-1 rounded border border-gray-600">
-                {anime.produser || anime.studio || "-"}
+                {info.studio || "-"}
               </span>
 
-              {anime.genres &&
-                anime.genres.map((genre, index) => {
-                  const genreSlug =
-                    genre.slug ||
-                    (typeof genre === "string" ? genre.toLowerCase() : "");
-
-                  let genreName = genre.name;
-
-                  if (
-                    !genreName ||
-                    (typeof genreName === "string" &&
-                      genreName.trim() === "" &&
-                      genreSlug)
-                  ) {
-                    genreName =
-                      genreSlug.charAt(0).toUpperCase() + genreSlug.slice(1);
-                  }
-
-                  return (
-                    <Link
-                      key={index}
-                      href={`/genre/${genreSlug}`}
-                      className="bg-yellow-500 text-black font-bold px-3 py-1 rounded hover:bg-yellow-400 transition"
-                    >
-                      {genreName}
-                    </Link>
-                  );
-                })}
+              {info.genres &&
+                info.genres.map((genreName, index) => (
+                  <span
+                    key={index}
+                    className="bg-yellow-500 text-black font-bold px-3 py-1 rounded cursor-default"
+                  >
+                    {genreName}
+                  </span>
+                ))}
             </div>
 
             <h3 className="text-xl font-bold mb-2 border-b border-gray-700 inline-block pb-1">
               Sinopsis
             </h3>
             <p className="text-gray-400 leading-relaxed text-sm md:text-base text-justify">
-              {anime.synopsis}
+              {anime.synopsis || "Sinopsis belum tersedia."}
             </p>
           </div>
         </div>
@@ -106,19 +91,20 @@ export default async function Page({ params }) {
         {episodes.length > 0 ? (
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
             {episodes.map((eps, index) => {
-              let epsId = eps.slug || eps.endpoint || eps.id;
-              if (epsId && epsId.includes("/episode/")) {
-                epsId = epsId.split("/episode/")[1];
+              let epsSlug = eps.slug;
+              if (eps.link) {
+                const parts = eps.link.split("/").filter(Boolean);
+                epsSlug = parts[parts.length - 1];
               }
-              if (epsId) epsId = epsId.replace(/\//g, "");
 
               return (
                 <Link
-                  href={`/watch/${epsId}`}
+                  href={`/watch/${epsSlug}`}
                   key={index}
                   className="bg-gray-800 p-3 rounded hover:bg-yellow-500 hover:text-black transition text-center text-sm border border-gray-700 truncate"
+                  title={eps.title}
                 >
-                  Episode {eps.episode_number}
+                  {eps.title}
                 </Link>
               );
             })}

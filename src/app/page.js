@@ -30,10 +30,10 @@ export default async function Page() {
 
         <div className="pt-4 flex flex-wrap justify-center gap-4">
           <Link
-            href="/genres"
+            href="/complete"
             className="bg-gray-800 border border-gray-600 hover:bg-yellow-500 hover:text-black hover:border-yellow-500 text-white font-bold py-2 px-6 rounded-full transition-all flex items-center gap-2 shadow-lg"
           >
-            📂 Lihat Semua Genre
+            ✅ Anime Tamat
           </Link>
 
           <Link
