@@ -6,8 +6,7 @@ export async function generateMetadata({ params }) {
   const response = await getAnimeResponse(`episode/${id}`, "");
 
   if (response && response.data) {
-    const title =
-      response.data.title || response.data.episode || "Nonton Anime";
+    const title = response.data.title || "Nonton Anime";
     return {
       title: `${title} - AuroNime`,
     };
@@ -22,6 +21,7 @@ export default async function Page({ params }) {
   const { id } = await params;
   const response = await getAnimeResponse(`episode/${id}`, "");
 
+  // Cek validitas respons
   if (!response || !response.data) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen text-white text-center p-10">
@@ -38,29 +38,17 @@ export default async function Page({ params }) {
 
   const data = response.data;
 
-  let videoUrl = data.stream_url || data.iframe || data.url || "";
+  // Tangkap link video (di API ini ada di data.iframe)
+  const videoUrl = data.iframe || data.stream_url || "";
 
-  if (
-    !videoUrl &&
-    data.stream &&
-    Array.isArray(data.stream) &&
-    data.stream.length > 0
-  ) {
-    videoUrl = data.stream[0].iframe || data.stream[0].link || "";
-  }
+  // Menangkap data navigasi
+  const nav = data.navigation || {};
+  const prevSlug = nav.previous?.slug;
+  const nextSlug = nav.next?.slug;
+  const animeSlug = nav.anime?.slug;
 
-  const getSlugFromLink = (linkUrl) => {
-    if (!linkUrl) return null;
-    const parts = linkUrl.split("/").filter(Boolean);
-    return parts[parts.length - 1];
-  };
-
-  const prevSlug = data.prev_episode_link
-    ? getSlugFromLink(data.prev_episode_link)
-    : null;
-  const nextSlug = data.next_episode_link
-    ? getSlugFromLink(data.next_episode_link)
-    : null;
+  // 👇 Tangkap data download 👇
+  const downloads = data.downloads || [];
 
   return (
     <div className="text-white min-h-screen pb-10">
@@ -73,22 +61,24 @@ export default async function Page({ params }) {
             &larr; Beranda
           </Link>
 
-          {data.anime_link && (
+          {/* Tombol ke Semua Episode */}
+          {animeSlug && (
             <Link
-              href={`/anime/${getSlugFromLink(data.anime_link)}`}
-              className="bg-gray-800 border border-gray-600 px-4 py-2 rounded hover:bg-gray-700 transition text-sm text-center"
+              href={`/anime/${animeSlug}`}
+              className="bg-gray-800 border border-gray-600 px-4 py-2 rounded hover:bg-yellow-500 hover:text-black transition font-bold text-sm text-center shadow-lg"
             >
-              Daftar Episode
+              Daftar Episode Lengkap
             </Link>
           )}
         </div>
 
-        <h1 className="text-xl md:text-2xl font-bold mb-6 text-yellow-400 border-b border-gray-800 pb-4">
-          {data.title || data.episode}
+        <h1 className="text-xl md:text-2xl font-bold mb-6 text-yellow-400 border-b border-gray-800 pb-4 leading-relaxed">
+          {data.title}
         </h1>
       </div>
 
       <div className="container mx-auto px-4">
+        {/* PLAYER VIDEO */}
         <div className="relative w-full aspect-video bg-black rounded-lg overflow-hidden shadow-2xl border border-gray-800">
           {videoUrl ? (
             <iframe
@@ -102,18 +92,19 @@ export default async function Page({ params }) {
           ) : (
             <div className="flex items-center justify-center h-full text-gray-400 flex-col gap-3 bg-gray-900">
               <span className="text-4xl">⚠️</span>
-              <p>Maaf, link stream video belum tersedia dari server sumber.</p>
+              <p>Maaf, link stream video belum tersedia.</p>
             </div>
           )}
         </div>
 
-        <div className="mt-6 p-4 bg-gray-800/50 border border-gray-800 rounded-lg">
+        {/* NAVIGASI EPISODE */}
+        <div className="mt-6 p-4 bg-gray-800/50 border border-gray-800 rounded-lg shadow-lg mb-8">
           <div className="flex flex-wrap justify-between items-center gap-4">
             <div className="flex-1">
               {prevSlug ? (
                 <Link
                   href={`/watch/${prevSlug}`}
-                  className="inline-block bg-gray-700 px-4 py-2 rounded font-bold hover:bg-yellow-500 hover:text-black transition"
+                  className="inline-block bg-gray-700 px-5 py-3 rounded-lg font-bold hover:bg-yellow-500 hover:text-black transition shadow"
                 >
                   &laquo; Eps Sebelumnya
                 </Link>
@@ -123,12 +114,11 @@ export default async function Page({ params }) {
                 </span>
               )}
             </div>
-
             <div className="flex-1 text-right">
               {nextSlug ? (
                 <Link
                   href={`/watch/${nextSlug}`}
-                  className="inline-block bg-gray-700 px-4 py-2 rounded font-bold hover:bg-yellow-500 hover:text-black transition"
+                  className="inline-block bg-gray-700 px-5 py-3 rounded-lg font-bold hover:bg-yellow-500 hover:text-black transition shadow"
                 >
                   Eps Selanjutnya &raquo;
                 </Link>
@@ -140,6 +130,51 @@ export default async function Page({ params }) {
             </div>
           </div>
         </div>
+
+        {/* 👇 AREA DOWNLOAD BERSUSUN 👇 */}
+        {downloads.length > 0 && (
+          <div className="bg-gray-900 border border-gray-800 rounded-lg shadow-lg p-4 md:p-6 mt-8">
+            <h3 className="text-xl font-bold text-yellow-400 mb-4 flex items-center gap-2 border-b border-gray-800 pb-2">
+              <span>📥</span> Link Download Episode
+            </h3>
+
+            <div className="flex flex-col gap-3">
+              {downloads.map((dl, index) => (
+                <div
+                  key={index}
+                  className="flex flex-col md:flex-row md:items-center gap-3 bg-gray-800 p-4 rounded-lg border border-gray-700 hover:border-gray-500 transition"
+                >
+                  <div className="min-w-30 flex items-baseline gap-2">
+                    <span className="font-extrabold text-lg text-white">
+                      {dl.quality}
+                    </span>
+                    <span className="text-xs text-gray-400 tracking-wide">
+                      ({dl.size})
+                    </span>
+                  </div>
+
+                  <div className="flex flex-wrap gap-2">
+                    {dl.providers.map((prov, idx) => (
+                      <a
+                        key={idx}
+                        href={prov.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="bg-gray-700 hover:bg-yellow-500 hover:text-black text-white text-xs md:text-sm px-3 py-1.5 rounded transition font-medium"
+                      >
+                        {prov.provider}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+            <p className="text-xs text-gray-500 mt-4 italic">
+              *Klik salah satu penyedia (provider) untuk mulai mengunduh. Jika
+              link mati, silakan coba provider lain.
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );
